@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovidDataCollector", "CovidDataCollector\CovidDataCollector.csproj", "{F2006679-BAD0-4ABC-9241-01F3E51CE487}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CovidDataCollector.Benchmarks", "CovidDataCollector.Benchmarks\CovidDataCollector.Benchmarks.csproj", "{52ED0345-4242-4BAD-928D-AAA1BE808D9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2006679-BAD0-4ABC-9241-01F3E51CE487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2006679-BAD0-4ABC-9241-01F3E51CE487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2006679-BAD0-4ABC-9241-01F3E51CE487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2006679-BAD0-4ABC-9241-01F3E51CE487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52ED0345-4242-4BAD-928D-AAA1BE808D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52ED0345-4242-4BAD-928D-AAA1BE808D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52ED0345-4242-4BAD-928D-AAA1BE808D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52ED0345-4242-4BAD-928D-AAA1BE808D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDE3D39A-8571-49A5-A446-CF90E3189506}
+	EndGlobalSection
+EndGlobal
