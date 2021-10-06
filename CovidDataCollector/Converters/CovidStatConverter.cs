@@ -1,7 +1,7 @@
-﻿using System;
-using CovidDataCollector.Models;
+﻿using CovidDataCollector.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace CovidDataCollector.Converters
 {

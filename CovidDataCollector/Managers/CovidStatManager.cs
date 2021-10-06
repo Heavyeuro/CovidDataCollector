@@ -1,7 +1,7 @@
-﻿using CovidDataCollector.Models;
+﻿using CovidDataCollector.Converters;
+using CovidDataCollector.Models;
 using Newtonsoft.Json;
 using System;
-using CovidDataCollector.Converters;
 
 namespace CovidDataCollector.Managers
 {
@@ -20,10 +20,10 @@ namespace CovidDataCollector.Managers
             var countryType = GetTypeByCountryCode(countryCode);
             Type constructed = typeof(CovidStatConverter<>).MakeGenericType(countryType);
             var deserializedObject = JsonConvert.DeserializeObject(jsonData, countryType,
-                (JsonConverter) Activator.CreateInstance(constructed) ??
+                (JsonConverter)Activator.CreateInstance(constructed) ??
                 throw new NotSupportedException("Cannot instantiate country.It was not defined."));
 
-            return (BaseCovidStatModel) deserializedObject;
+            return (BaseCovidStatModel)deserializedObject;
         }
 
         private Type GetTypeByCountryCode(string countryCode)

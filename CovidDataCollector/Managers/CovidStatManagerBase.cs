@@ -7,12 +7,12 @@ namespace CovidDataCollector.Managers
     public abstract class CovidStatManagerBase : ICovidStatManager
     {
         private const string GithubJsonCovidStatSource = "https://covid.ourworldindata.org/data/owid-covid-data.json";
-        private static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient Client = new HttpClient();
 
         public async Task<BaseCovidStatModel> GetCovidStatByCountryCode(string countryCode)
         {   //TODO: add caching
             countryCode = countryCode.ToUpper();
-            var jsonData = await client.GetStringAsync(GithubJsonCovidStatSource);
+            var jsonData = await Client.GetStringAsync(GithubJsonCovidStatSource);
             jsonData = CutOffRedundantData(countryCode, jsonData);
 
             return DeserializeJson(countryCode, jsonData);

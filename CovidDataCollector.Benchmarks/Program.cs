@@ -1,7 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
 using CovidDataCollector.Benchmarks.Benchmarks;
-using System;
-using System.Collections.Generic;
 
 namespace CovidDataCollector.Benchmarks
 {
@@ -11,7 +9,7 @@ namespace CovidDataCollector.Benchmarks
         {
             BenchmarkRunner.Run<InitializationBenchmark>();
         }
-        
+
 
         //public class UKRAINE
         //{
