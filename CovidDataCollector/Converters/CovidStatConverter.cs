@@ -1,9 +1,9 @@
-﻿using CovidDataCollector.Models;
+﻿using System;
+using CovidDataCollector.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
-namespace CovidDataCollector.Managers
+namespace CovidDataCollector.Converters
 {
     public class CovidStatConverter<T> : JsonCreationConverter<T> where T : BaseCovidStatModel
     {
@@ -16,7 +16,7 @@ namespace CovidDataCollector.Managers
         {
             if (!jObject.TryGetValue(objectType.Name, StringComparison.OrdinalIgnoreCase, out var resourceTypeToken))
             {
-                throw new NotSupportedException($"Resource objects without 'resourceType' property are not supported. The object was {jObject}");
+                throw new NotSupportedException($"Country without 'class' property are not supported. The object was {jObject}");
             }
 
             return (T)JsonConvert.DeserializeObject(resourceTypeToken.ToString(), objectType);
@@ -35,7 +35,7 @@ namespace CovidDataCollector.Managers
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JObject jObject = JObject.Load(reader);
+            var jObject = JObject.Load(reader);
             T target = Create(objectType, jObject);
             return target;
         }

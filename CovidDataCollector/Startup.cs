@@ -20,8 +20,6 @@ namespace CovidDataCollector
         {
             services.AddControllers();
             services.AddScoped<ICovidStatManager, CovidStatManager>();
-            //services.AddScoped<ICovidStatManager, CovidStatManagerSwitch>();
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
