@@ -20,6 +20,13 @@ namespace CovidDataCollector
         {
             services.AddControllers();
             services.AddScoped<ICovidStatManager, CovidStatManager>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration.GetConnectionString("Redis");
+                options.InstanceName = "CovidData_";
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

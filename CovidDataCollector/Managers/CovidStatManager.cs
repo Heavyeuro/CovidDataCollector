@@ -19,12 +19,15 @@ namespace CovidDataCollector.Managers
         {
             var countryType = GetTypeByCountryCode(countryCode);
             Type constructed = typeof(CovidStatConverter<>).MakeGenericType(countryType);
-            var deserializedObject = JsonConvert.DeserializeObject(jsonData, countryType,
-                (JsonConverter)Activator.CreateInstance(constructed) ??
-                throw new NotSupportedException("Cannot instantiate country.It was not defined."));
+            var deserializedObject = DeserializeObject(jsonData, countryType, constructed);
 
             return (BaseCovidStatModel)deserializedObject;
         }
+
+        private static object DeserializeObject(string jsonData, Type countryType, Type constructed)
+            => JsonConvert.DeserializeObject(jsonData, countryType,
+                (JsonConverter)Activator.CreateInstance(constructed) ??
+                throw new NotSupportedException("Cannot instantiate country. It was not defined."));
 
         private Type GetTypeByCountryCode(string countryCode)
             => Type.GetType($"{_modelsNamespace}.{countryCode}")
