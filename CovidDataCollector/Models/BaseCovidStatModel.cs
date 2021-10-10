@@ -1,4 +1,6 @@
-﻿namespace CovidDataCollector.Models
+﻿using System.Collections.Generic;
+
+namespace CovidDataCollector.Models
 {
     public class BaseCovidStatModel
     {
@@ -18,5 +20,7 @@
         public double hospital_beds_per_thousand { get; set; }
         public double life_expectancy { get; set; }
         public double human_development_index { get; set; }
+        public List<DailyCovidStatModel> data { get; set; }
+
     }
 }

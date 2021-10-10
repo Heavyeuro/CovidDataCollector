@@ -1,9 +1,9 @@
-﻿using CovidDataCollector.Models;
+﻿using System;
+using CovidDataCollector.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 
-namespace CovidDataCollector.Converters
+namespace CovidDataCollector.Serializer
 {
     public class CovidStatConverter<T> : JsonCreationConverter<T> where T : BaseCovidStatModel
     {

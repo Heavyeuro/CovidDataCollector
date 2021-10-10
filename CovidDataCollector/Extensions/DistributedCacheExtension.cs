@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CovidDataCollector.Models;
+using CovidDataCollector.Serializer;
+using Microsoft.Extensions.Caching.Distributed;
+using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace CovidDataCollector.Extensions
 {
@@ -16,7 +18,7 @@ namespace CovidDataCollector.Extensions
                 SlidingExpiration = unusedExpireTime,
             };
 
-            var jsonData = JsonSerializer.Serialize(data);
+            var jsonData = CovidStatSerializer.SerializeObject(data as BaseCovidStatModel);
             await cache.SetStringAsync(recordId, jsonData, options);
         }
 

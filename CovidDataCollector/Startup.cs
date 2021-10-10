@@ -1,4 +1,5 @@
 using CovidDataCollector.Managers;
+using CovidDataCollector.Properties;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,10 +12,10 @@ namespace CovidDataCollector
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -23,10 +24,14 @@ namespace CovidDataCollector
 
             services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = Configuration.GetConnectionString("Redis");
+                options.Configuration = configuration.GetConnectionString("Redis");
                 options.InstanceName = "CovidData_";
             });
 
+            var covidStatSource = new GithubJsonCovidStatSource();
+            configuration.GetSection(nameof(GithubJsonCovidStatSource)).Bind(covidStatSource);
+
+            services.AddSingleton(covidStatSource);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

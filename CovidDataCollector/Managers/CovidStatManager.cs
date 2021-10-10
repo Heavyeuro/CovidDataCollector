@@ -1,10 +1,10 @@
-﻿using CovidDataCollector.Converters;
-using CovidDataCollector.Models;
-using Newtonsoft.Json;
+﻿using CovidDataCollector.Models;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CovidDataCollector.Extensions;
+using CovidDataCollector.Properties;
+using CovidDataCollector.Serializer;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.VisualBasic;
 
@@ -16,22 +16,30 @@ namespace CovidDataCollector.Managers
     public class CovidStatManager : ICovidStatManager
     {
         private readonly IDistributedCache _distributedCache;
-        private const string GithubJsonCovidStatSource = "https://covid.ourworldindata.org/data/owid-covid-data.json";
+        private readonly GithubJsonCovidStatSource _covidStatSource;
         private static readonly HttpClient Client = new HttpClient();
-        private readonly string _modelsNamespace;
 
-        public CovidStatManager(IDistributedCache distributedCache)
+        public CovidStatManager(IDistributedCache distributedCache, GithubJsonCovidStatSource githubJsonCovidStatSource)
         {
             _distributedCache = distributedCache;
-            _modelsNamespace = typeof(BaseCovidStatModel).Namespace;
+            _covidStatSource = githubJsonCovidStatSource;
         }
 
         public async Task<BaseCovidStatModel> GetCovidStatByCountryCode(string countryCode)
         {
             countryCode = countryCode.ToUpper();
 
+            BaseCovidStatModel covidStat = null;
+
             string recordKey = countryCode + DateAndTime.Now.ToString("yyyyMMMdd");
-            var covidStat = await _distributedCache.GetRecordAsync<BaseCovidStatModel>(recordKey);
+            try
+            {
+                covidStat = await _distributedCache.GetRecordAsync<BaseCovidStatModel>(recordKey);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             if (covidStat is null)
             {
@@ -44,31 +52,13 @@ namespace CovidDataCollector.Managers
 
         private async Task<BaseCovidStatModel> GetCovidStatByCountryCodeFromApi(string countryCode)
         {
-            var jsonData = await Client.GetStringAsync(GithubJsonCovidStatSource);
+            var jsonData = await Client.GetStringAsync(_covidStatSource.Url);
             jsonData = CutOffRedundantData(countryCode, jsonData);
 
-            return DeserializeJson(countryCode, jsonData);
+            return CovidStatSerializer.DeserializeJson(countryCode, jsonData);
         }
 
-        private BaseCovidStatModel DeserializeJson(string countryCode, string jsonData)
-        {
-            var countryType = GetTypeByCountryCode(countryCode);
-            Type constructed = typeof(CovidStatConverter<>).MakeGenericType(countryType);
-            var deserializedObject = DeserializeObject(jsonData, countryType, constructed);
-
-            return (BaseCovidStatModel) deserializedObject;
-        }
-
-        private static object DeserializeObject(string jsonData, Type countryType, Type constructed)
-            => JsonConvert.DeserializeObject(jsonData, countryType,
-                (JsonConverter) Activator.CreateInstance(constructed) ??
-                throw new NotSupportedException("Cannot instantiate country. It was not defined."));
-
-        private Type GetTypeByCountryCode(string countryCode)
-            => Type.GetType($"{_modelsNamespace}.{countryCode}")
-               ?? throw new NotSupportedException("Can't match type for given country code");
-
-        private string CutOffRedundantData(string countryCode, string jsonData)
+        private static string CutOffRedundantData(string countryCode, string jsonData)
             => "{" + $"\"{countryCode}" + jsonData.Split(countryCode)[1];
     }
 }
