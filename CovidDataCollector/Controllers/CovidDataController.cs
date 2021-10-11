@@ -9,12 +9,10 @@ namespace CovidDataCollector.Controllers
     [Route("[controller]")]
     public class CovidDataController : ControllerBase
     {
-        private readonly ILogger<CovidDataController> _logger;
         private readonly ICovidStatManager _covidStatManager;
 
-        public CovidDataController(ILogger<CovidDataController> logger, ICovidStatManager covidStatManager)
+        public CovidDataController(ICovidStatManager covidStatManager)
         {
-            _logger = logger;
             _covidStatManager = covidStatManager;
         }
 

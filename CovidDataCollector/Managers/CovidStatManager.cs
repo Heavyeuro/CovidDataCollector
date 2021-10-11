@@ -6,6 +6,7 @@ using CovidDataCollector.Extensions;
 using CovidDataCollector.Properties;
 using CovidDataCollector.Serializer;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 
 namespace CovidDataCollector.Managers
@@ -17,40 +18,53 @@ namespace CovidDataCollector.Managers
     {
         private readonly IDistributedCache _distributedCache;
         private readonly GithubJsonCovidStatSource _covidStatSource;
+        private readonly ILogger<CovidStatManager> _logger;
         private static readonly HttpClient Client = new HttpClient();
 
-        public CovidStatManager(IDistributedCache distributedCache, GithubJsonCovidStatSource githubJsonCovidStatSource)
+        public CovidStatManager(IDistributedCache distributedCache,
+            GithubJsonCovidStatSource githubJsonCovidStatSource, ILogger<CovidStatManager> logger)
         {
             _distributedCache = distributedCache;
             _covidStatSource = githubJsonCovidStatSource;
+            _logger = logger;
         }
 
+        // implement proxy pattern. If cache is not accessible once - disable it for some time
         public async Task<BaseCovidStatModel> GetCovidStatByCountryCode(string countryCode)
         {
             countryCode = countryCode.ToUpper();
-
-            BaseCovidStatModel covidStat = null;
-
             string recordKey = countryCode + DateAndTime.Now.ToString("yyyyMMMdd");
+
+            var covidStat = await GetCovidStatByCountryCodeFromCache(recordKey) ??
+                            await GetCovidStatByCountryCodeFromApi(countryCode, recordKey);
+
+            try
+            {
+                await _distributedCache.SetRecordAsync(recordKey, covidStat);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"Unsuccessful attempt to cache record in redis. Record: {recordKey}");
+            }
+
+            return covidStat;
+        }
+
+        private async Task<BaseCovidStatModel> GetCovidStatByCountryCodeFromCache(string recordKey)
+        {
+            BaseCovidStatModel covidStat = null;
             try
             {
                 covidStat = await _distributedCache.GetRecordAsync<BaseCovidStatModel>(recordKey);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e, $"Unsuccessful attempt to get the data from redis. Record: {recordKey}");
             }
-
-            if (covidStat is null)
-            {
-                covidStat = await GetCovidStatByCountryCodeFromApi(countryCode);
-                await _distributedCache.SetRecordAsync(recordKey, covidStat);
-            }
-
             return covidStat;
         }
 
-        private async Task<BaseCovidStatModel> GetCovidStatByCountryCodeFromApi(string countryCode)
+        private async Task<BaseCovidStatModel> GetCovidStatByCountryCodeFromApi(string countryCode, string recordKey)
         {
             var jsonData = await Client.GetStringAsync(_covidStatSource.Url);
             jsonData = CutOffRedundantData(countryCode, jsonData);
