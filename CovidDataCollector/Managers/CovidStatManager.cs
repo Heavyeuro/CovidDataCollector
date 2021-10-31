@@ -19,7 +19,7 @@ namespace CovidDataCollector.Managers
         private readonly IDistributedCache _distributedCache;
         private readonly GithubJsonCovidStatSource _covidStatSource;
         private readonly ILogger<CovidStatManager> _logger;
-        private static readonly HttpClient Client = new HttpClient();
+        private static readonly HttpClient Client = new();
 
         public CovidStatManager(IDistributedCache distributedCache,
             GithubJsonCovidStatSource githubJsonCovidStatSource, ILogger<CovidStatManager> logger)

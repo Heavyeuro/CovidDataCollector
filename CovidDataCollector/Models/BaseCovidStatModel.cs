@@ -21,6 +21,5 @@ namespace CovidDataCollector.Models
         public double life_expectancy { get; set; }
         public double human_development_index { get; set; }
         public List<DailyCovidStatModel> data { get; set; }
-
     }
 }
