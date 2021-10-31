@@ -24,26 +24,32 @@ namespace CovidDataCollector.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync(string countryCode = "ukr")
         {
-            var q = Directory.GetCurrentDirectory() + "\\CsvStorage\\covidData.csv";
             //TODO: Map on "convenient" Dto
             var result = await _covidStatManager.GetCovidStatByCountryCode(countryCode);
 
-            WriteNewCsvFile(q, result.data);
+            WriteToCsvLocalStorage(result.data);
             return Ok(result);
         }
 
-        public void WriteNewCsvFile(string path, List<DailyCovidStatModel> covidStatModel)
+        private static string GetRootPath()
         {
-            using var sw = new StreamWriter(path, false, new UTF8Encoding(true));
+            //TODO: Set app it via app config
+            return Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "\\CsvStorage\\covidData.csv";
+        }
+
+        public void WriteToCsvLocalStorage(List<DailyCovidStatModel> covidStatModel)
+        {
+            using var sw = new StreamWriter(GetRootPath(), false, new UTF8Encoding(true));
             using var cw = new CsvWriter(sw, CultureInfo.CurrentCulture);
 
             cw.WriteHeader<DailyCovidStatModel>();
             cw.NextRecord();
-            foreach (var stat in covidStatModel)
+
+            covidStatModel.ForEach(dailyStat =>
             {
-                cw.WriteRecord(stat);
+                cw.WriteRecord(dailyStat);
                 cw.NextRecord();
-            }
+            });
         }
     }
 }

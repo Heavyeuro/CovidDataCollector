@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CsvStorage\**" />
+    <Content Remove="CsvStorage\**" />
+    <EmbeddedResource Remove="CsvStorage\**" />
+    <None Remove="CsvStorage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -17,10 +24,6 @@
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.2.0-dev-00752" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.50" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="CsvStorage\" />
   </ItemGroup>
 
 
