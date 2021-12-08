@@ -1,4 +1,3 @@
-from matplotlib import pyplot as plt
 from pandas import DataFrame
 from sklearn.impute import SimpleImputer
 import core_action as ca
@@ -8,10 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 
 # Can be replaced in future by Label Encoding for categorical variable
 def prepare_dataset_core(name_csv: str):
-    df = ca.read_csv('../DataSource/' + name_csv)
-
-    # ca.replace_val_in_cols_except(df, 'diagnostic_superclass', "['NORM']", False)
-    # ca.replace_val_in_cols(df, ['diagnostic_superclass'], "['NORM']", True)
+    df = ca.read_csv(name_csv)
 
     sid = simple_imputing_data(df, df)
 
@@ -32,14 +28,6 @@ def simple_imputing_data(X_train, X_valid):
     return imputed_X_train, imputed_X_valid
 
 
-# Encoding categorical variables
-def detect_vals(obj_to_describe, val, exclude_col=[]):
-    # missing values by columns
-    obj_to_describe = obj_to_describe.drop(exclude_col, axis=1)
-    missing_val_count_by_column = (obj_to_describe.isin([val]).sum())
-    return (missing_val_count_by_column)
-
-
 def apply_encoder(X: DataFrame):
     s = (X.dtypes == 'object')
     object_cols = list(s[s].index)
@@ -48,3 +36,4 @@ def apply_encoder(X: DataFrame):
         X[col] = LabelEncoder().fit_transform(X[col])
 
     return X
+
