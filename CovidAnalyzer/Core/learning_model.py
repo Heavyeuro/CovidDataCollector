@@ -1,3 +1,5 @@
+from math import fabs
+from datetime import datetime
 from matplotlib import pyplot as plt
 from sktime.utils.plotting import plot_series
 import numpy as np
@@ -37,7 +39,7 @@ def create_dataset(dataset_creation, look_back_creation=1):
 
 
 def build_and_score_ml_model_core(df: DataFrame):
-    best_model = build_estimate(df, 3)
+    best_model = build_estimate(df, 12)
     x_train, y_train, x_test, y_test, scaler = prepare_data_3d(df)
 
     # Printing training prediction results
@@ -45,15 +47,26 @@ def build_and_score_ml_model_core(df: DataFrame):
     plot(test_predict, df)
 
     # Printing real prediction results
+    fh, df_fh = prepare_fh(df)
+    real_predict = predict(best_model, scaler, fh)
+    plot_final(real_predict, df_fh, len(df['date']), 25)
 
 
-# def prepare_fh():
-#
+# Making x_for_prediction
+def prepare_fh(df):
+    fh_initial_value = len(df['date'])
+    df = df[['date', 'new_cases']]
+
+    for i in range(fh_initial_value, int(fh_initial_value*1.15)):
+        df2 = {'date': i, 'new_cases': i}
+        df = df.append(df2, ignore_index=True)
+    x_train, y_train, x_test, y_test, scaler = prepare_data_3d(df)
+
+    return x_test, df
 
 
-
-def predict(model, scaler, x_test):
-    test_predict_ = model.predict(x_test)
+def predict(model, scaler, x_for_prediction):
+    test_predict_ = model.predict(x_for_prediction)
     test_predict_ = scaler.inverse_transform(test_predict_)
     return test_predict_[:, 0]
 
@@ -63,6 +76,23 @@ def plot(test_predict: np.ndarray, df: DataFrame):
     pred = DataFrame(test_predict, index=x_valid.index)
     plot_series(y_train, y_valid, pred, labels=["y_train", "y_test", "y_pred"])
     plt.show()
+
+
+def plot_final(test_predict: np.ndarray, df: DataFrame, real_length, prediction_days):
+    x_train, y_train = pd.DataFrame(df.iloc[:real_length, 0]), pd.DataFrame(df.iloc[:real_length, 1])
+    x_valid, y_valid = pd.DataFrame(df.iloc[real_length:, 0]), pd.DataFrame(df.iloc[real_length:, 1])
+    x_valid = x_valid.head(prediction_days)
+    start_pred = int(fabs(len(df['date']) - real_length-len(test_predict)))
+    test_predict = test_predict[start_pred:]
+    test_predict = test_predict[:prediction_days]
+
+    index = x_valid.index
+    pred = DataFrame(data=test_predict, index=index)
+    plot_series(y_train, pred, labels=["Confirmed cases", f"Predicted {prediction_days} days"])
+    plt.show()
+    filename = datetime.today().strftime('%Y-%m-%d') + '.csv'
+    pred.to_csv(r'../../CsvStorage/' + filename, index=False)
+    print()
 
 
 def prepare_data_2d(df):
@@ -76,8 +106,8 @@ def prepare_data_2d(df):
     return x_train, y_train, x_valid, y_valid
 
 
-def prepare_data_3d(df):
-    train_size = int(0.85 * len(df))
+def prepare_data_3d(df, test_data_ratio=0.85):
+    train_size = int(test_data_ratio * len(df))
 
     univariate_df = df[['date', 'new_cases']].copy()
     univariate_df.columns = ['ds', 'y']
@@ -130,33 +160,3 @@ def build_estimate(df, max_epoch_number=12):
             best_epoch = i
 
     return create_model(x_train, y_train, x_test, y_test, best_epoch)
-
-
-# def made_further_prediction():
-#     # x_train, y_train = pd.DataFrame(univariate_df.iloc[:train_size, 0]), pd.DataFrame(univariate_df.iloc[:train_size, 1])
-#     # x_valid, y_valid = pd.DataFrame(univariate_df.iloc[train_size:, 0]), pd.DataFrame(univariate_df.iloc[train_size:, 1])
-#     #
-#     # y_pred = pd.DataFrame(test_predict_[:, 0])
-#     # y_pred.index = x_valid.index
-#     # plot_series(y_train, y_valid, y_pred, labels=["y_train", "y_test", "y_pred"])
-#
-#     train_size = 60
-#     fh_initial_value = df.index[-1]
-#     univariate_df = DataFrame(data=np.arange(fh_initial_value, fh_initial_value + train_size+1), index=np.arange(fh_initial_value, fh_initial_value + train_size+1))
-#     univariate_df.columns = ['y']
-#
-#     data = univariate_df.filter(['y'])
-#     #Convert the dataframe to a numpy array
-#     dataset = data.values
-#
-#     scaler = MinMaxScaler(feature_range=(-1, 0))
-#     scaled_data = scaler.fit_transform(dataset)
-#     # Defines the rolling window
-#     look_back = 52
-#     # Split into train and test sets
-#     train, test = scaled_data[:train_size-look_back,:], scaled_data[train_size-look_back:,:]
-#     x_test, y_test = create_dataset(test, look_back)
-#
-#     # reshape input to be [samples, time steps, features]
-#     x_test = np.reshape(x_test, (x_test.shape[0], 1, x_test.shape[1]))
-#     further_prediction = model.predict(x_test)

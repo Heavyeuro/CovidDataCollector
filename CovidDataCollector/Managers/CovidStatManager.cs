@@ -1,10 +1,12 @@
 ﻿using CovidDataCollector.Models;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CovidDataCollector.Extensions;
 using CovidDataCollector.Properties;
 using CovidDataCollector.Serializer;
+using CovidDataCollector.Services;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
@@ -16,6 +18,7 @@ namespace CovidDataCollector.Managers
     /// </summary>
     public class CovidStatManager : ICovidStatManager
     {
+
         private readonly IDistributedCache _distributedCache;
         private readonly GithubJsonCovidStatSource _covidStatSource;
         private readonly ILogger<CovidStatManager> _logger;
@@ -29,7 +32,7 @@ namespace CovidDataCollector.Managers
             _logger = logger;
         }
 
-        // implement proxy pattern. If cache is not accessible once - disable it for some time
+        // Implementation of proxy pattern. If cache is not accessible once - disable it for some time
         public async Task<BaseCovidStatModel> GetCovidStatByCountryCode(string countryCode)
         {
             countryCode = countryCode.ToUpper();
@@ -48,6 +51,16 @@ namespace CovidDataCollector.Managers
             }
 
             return covidStat;
+        }
+
+        public List<DailyCovidStatModel> GetRealData()
+        {
+            return XlsService.ReadCsv();
+        }
+
+        public List<double> GetPredictionData()
+        {
+            return XlsService.ReadCsvDoubleCol();
         }
 
         private async Task<BaseCovidStatModel> GetCovidStatByCountryCodeFromCache(string recordKey)

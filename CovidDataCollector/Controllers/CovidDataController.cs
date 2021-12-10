@@ -34,7 +34,7 @@ namespace CovidDataCollector.Controllers
         private static string GetRootPath()
         {
             //TODO: Set app it via app config
-            return Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "\\CsvStorage\\covidData.csv";
+            return Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "\\..\\CsvStorage\\covidData.csv";
         }
 
         public void WriteToCsvLocalStorage(List<DailyCovidStatModel> covidStatModel)

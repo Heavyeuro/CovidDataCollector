@@ -1,5 +1,7 @@
 using CovidDataCollector.Managers;
 using CovidDataCollector.Properties;
+using CovidDataCollector.Services;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +24,7 @@ namespace CovidDataCollector
         {
             services.AddControllers();
             services.AddScoped<ICovidStatManager, CovidStatManager>();
+            services.AddScoped<IPlotService, PlotService>();
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -42,8 +45,13 @@ namespace CovidDataCollector
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
@@ -53,6 +61,16 @@ namespace CovidDataCollector
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
         }
     }
