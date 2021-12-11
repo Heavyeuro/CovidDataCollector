@@ -20,25 +20,28 @@ namespace CovidDataCollector.Services
         public string BuildNewCasesWithPredictionPlot()
         {
             var realData = _covidStatManager.GetRealData();
-            var predictedData = _covidStatManager.GetPredictionData();
+            var predictedData = _covidStatManager.GetPredictionData("new_cases");
 
             var plotLines = new List<DailyPlotLine>
             {
                 new("New cases", DateTime.Parse(realData[0].date),
-                    realData.Select(x => x.new_deaths ?? 0).ToArray()),
-                new("Predicted", DateTime.Today, predictedData.ToArray()),
+                    realData.Select(x => x.new_cases).ToArray()),
+                new("Predicted", DateTime.Today, predictedData.ToArray())
             };
 
             return MakePlot(plotLines, "", "Cases");
         }
 
-        public string BuildDeathsPlot()
+        public string BuildDeathsWithPredictionPlot()
         {
             var realData = _covidStatManager.GetRealData();
+            var predictedData = _covidStatManager.GetPredictionData("new_deaths");
+
             var plotLines = new List<DailyPlotLine>
             {
                 new("Deaths per day", DateTime.Parse(realData[0].date),
-                    realData.Select(x => x.new_deaths ?? 0).ToArray())
+                    realData.Select(x => x.new_deaths ?? 0).ToArray()),
+                new("Predicted", DateTime.Today, predictedData.ToArray())
             };
 
             return MakePlot(plotLines, "", "Deaths");

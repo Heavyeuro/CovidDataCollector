@@ -6,7 +6,7 @@ namespace CovidDataCollector.Services
     public interface IPlotService
     {
         public string BuildNewCasesWithPredictionPlot();
-        public string BuildDeathsPlot();
+        public string BuildDeathsWithPredictionPlot();
         public List<DailyCovidStatModel> GetTableData();
     }
 }

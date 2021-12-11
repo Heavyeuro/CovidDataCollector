@@ -8,6 +8,6 @@ namespace CovidDataCollector.Managers
     {
         public Task<BaseCovidStatModel> GetCovidStatByCountryCode(string countryCode);
         public List<DailyCovidStatModel> GetRealData();
-        public List<double> GetPredictionData();
+        public List<double> GetPredictionData(string fileExtension);
     }
 }

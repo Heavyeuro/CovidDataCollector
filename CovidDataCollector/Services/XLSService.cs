@@ -12,7 +12,8 @@ namespace CovidDataCollector.Services
     {
         private static readonly string root = Directory.GetCurrentDirectory() + "\\..\\CsvStorage\\";
         private static readonly string RealDataPath = root + "covidData.csv";
-        private static readonly string DailyPredictionFileName = root + DateTime.Today.ToString("yyyy-M-d") + ".csv";
+        private static readonly string DailyPredictionFileName = root + DateTime.Today.ToString("yyyy-M-d");
+        private static readonly string Extension = ".csv";
 
 
         public static List<DailyCovidStatModel> ReadCsv()
@@ -24,7 +25,6 @@ namespace CovidDataCollector.Services
             csv.ReadHeader();
             while (csv.Read())
             {
-
                 records.Add(new DailyCovidStatModel
                 {
                     date = csv.GetField<string>("date"),
@@ -36,9 +36,9 @@ namespace CovidDataCollector.Services
             return records.ToList(); 
         }
 
-        public static List<double> ReadCsvDoubleCol()
+        public static List<double> ReadCsvDoubleCol(string fileExtension)
         {
-            using var reader = new StreamReader(DailyPredictionFileName);
+            using var reader = new StreamReader(DailyPredictionFileName + fileExtension + Extension);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             return csv.GetRecords<double>().ToList();
         }

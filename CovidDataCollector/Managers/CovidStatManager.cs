@@ -58,9 +58,9 @@ namespace CovidDataCollector.Managers
             return XlsService.ReadCsv();
         }
 
-        public List<double> GetPredictionData()
+        public List<double> GetPredictionData(string fileExtension)
         {
-            return XlsService.ReadCsvDoubleCol();
+            return XlsService.ReadCsvDoubleCol(fileExtension);
         }
 
         private async Task<BaseCovidStatModel> GetCovidStatByCountryCodeFromCache(string recordKey)

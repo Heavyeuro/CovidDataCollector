@@ -25,7 +25,7 @@ namespace CovidDataCollector.Controllers
         [HttpGet("GetDeathPlot")]
         public IActionResult GetDeathPlot()
         {
-            var path = _uiUtilService.BuildDeathsPlot();
+            var path = _uiUtilService.BuildDeathsWithPredictionPlot();
             return PhysicalFile(path, "image/jpeg");
         }
 

@@ -10,10 +10,10 @@ def prepare_dataset_core(name_csv: str):
     df = ca.read_csv(name_csv)
 
     sid = simple_imputing_data(df, df)
-
-    df = apply_encoder(sid[0])
-
-    return df
+    X = sid[0]
+    # df = apply_encoder(sid[0])
+    X['date'] = LabelEncoder().fit_transform(X['date'])
+    return X.drop(columns=['tests_units'])
 
 
 # Replacing missing values (imputing) according to certain strategy

@@ -8,4 +8,6 @@ if __name__ == '__main__':
     dataframe = pds.prepare_dataset_core(patients_info_filename)
 
     # building ML
-    lm.build_and_score_ml_model_core(dataframe)
+    col_to_predict = ['new_cases', 'new_deaths']
+    for col in col_to_predict:
+        lm.build_and_score_ml_model_core(dataframe, col)
