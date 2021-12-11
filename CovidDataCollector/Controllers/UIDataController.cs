@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CovidDataCollector.Managers;
@@ -36,10 +37,20 @@ namespace CovidDataCollector.Controllers
             return PhysicalFile(path, "image/jpeg");
         }
 
-        [HttpGet("GetFullTable")]
+        [HttpGet("GetStatModel")]
         public IActionResult GetFullTable()
         {
-            return Ok(_uiUtilService.GetTableData());
+            var models = _uiUtilService.GetTableData();
+            models.Reverse();
+
+            var covidStatModel = models.First();
+            return Ok(new CovidStatModel
+            {
+                new_cases = covidStatModel.new_cases,
+                new_deaths = covidStatModel.new_deaths,
+                total_cases = covidStatModel.total_cases,
+                total_deaths = covidStatModel.total_deaths
+            });
         }
     }
 }

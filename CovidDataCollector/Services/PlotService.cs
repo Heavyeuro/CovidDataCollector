@@ -59,7 +59,7 @@ namespace CovidDataCollector.Services
             var plt = new Plot();
             plt.XAxis.Label(xLabel);
             plt.YAxis.Label(yLabel);
-            plt.XAxis.TickLabelFormat("MM/dd/yy", dateTimeFormat: true);
+            plt.XAxis.TickLabelFormat("MM/dd/yy", true);
 
 
             foreach (var plotLine in plotLines)

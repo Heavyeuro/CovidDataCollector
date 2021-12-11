@@ -30,6 +30,8 @@ namespace CovidDataCollector.Services
                     date = csv.GetField<string>("date"),
                     new_cases = csv.GetField<double>("new_cases"),
                     new_deaths = csv.GetField<double?>("new_deaths"),
+                    total_cases = csv.GetField<double>("total_cases"),
+                    total_deaths = csv.GetField<double?>("total_deaths"),
                 });
             }
 
