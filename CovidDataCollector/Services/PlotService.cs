@@ -26,7 +26,7 @@ namespace CovidDataCollector.Services
             {
                 new("New cases", DateTime.Parse(realData[0].date),
                     realData.Select(x => x.new_cases).ToArray()),
-                new("Predicted", DateTime.Today, predictedData.ToArray())
+                new("Prediction", DateTime.Today, predictedData.ToArray())
             };
 
             return MakePlot(plotLines, "", "Cases");
@@ -41,7 +41,7 @@ namespace CovidDataCollector.Services
             {
                 new("Deaths per day", DateTime.Parse(realData[0].date),
                     realData.Select(x => x.new_deaths ?? 0).ToArray()),
-                new("Predicted", DateTime.Today, predictedData.ToArray())
+                new("Prediction", DateTime.Today, predictedData.ToArray())
             };
 
             return MakePlot(plotLines, "", "Deaths");
@@ -69,7 +69,7 @@ namespace CovidDataCollector.Services
                     days[i] = plotLine.StartDateTime.AddDays(1).AddDays(i).ToOADate();
 
                 // plot the data with custom tick format (https://tinyurl.com/ycwh45af)
-                plt.AddScatter(days, plotLine.YDots);
+                plt.AddScatter(days, plotLine.YDots, label: plotLine.Label);
                 plt.SetCulture("M\\/dd");
             }
            
