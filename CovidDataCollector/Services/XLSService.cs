@@ -10,9 +10,9 @@ namespace CovidDataCollector.Services
 {
     public class XlsService
     {
-        private static readonly string root = Directory.GetCurrentDirectory() + "\\..\\CsvStorage\\";
-        private static readonly string RealDataPath = root + "covidData.csv";
-        private static readonly string DailyPredictionFileName = root + DateTime.Today.ToString("yyyy-M-d");
+        private static readonly string Root = Directory.GetCurrentDirectory() + "\\..\\CsvStorage\\";
+        private static readonly string RealDataPath = Root + "covidData.csv";
+        private static readonly string DailyPredictionFileName = Root + DateTime.Today.ToString("yyyy-M-d");
         private static readonly string Extension = ".csv";
 
 
@@ -31,7 +31,7 @@ namespace CovidDataCollector.Services
                     new_cases = csv.GetField<double>("new_cases"),
                     new_deaths = csv.GetField<double?>("new_deaths"),
                     total_cases = csv.GetField<double>("total_cases"),
-                    total_deaths = csv.GetField<double?>("total_deaths"),
+                    total_deaths = csv.GetField<double?>("total_deaths")
                 });
             }
 

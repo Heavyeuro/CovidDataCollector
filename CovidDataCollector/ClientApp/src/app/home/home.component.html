@@ -1,4 +1,46 @@
-<h1>Hello, world!</h1>
-<p>Welcome to your new single-page application, built with:</p>
-<img src={{GetDeathPlot}} alt="Plot" width="700" height="700">
-<img src={{GetCasesPlot}} alt="Plot" width="700" height="700">
+<div class="row">
+  <div class="col-md-7 col-md-offset-3">
+    <h3 align="right">Daily updated statistics</h3>
+  </div>
+</div>
+<div class="row">
+  <h4>New deaths with prediction for 24 days</h4>
+  <div class="col-md-9">
+    <img src={{getDeathPlot}} alt="Plot" width="850">
+  </div>
+  <div class="col-md-3 block">
+    <div class="col-md-3 block">
+      <div class="circle">
+        <p>New deaths</p>
+        <br/>
+        <p style="font-size: 25px">{{covidStatModel.new_deaths}}</p>
+      </div>
+    </div><div class="col-md-3 block">
+      <div class="circle">
+        <p>Total deaths</p>
+        <p style="font-size: 25px">{{covidStatModel.total_deaths}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<br/>
+<div class="row">
+  <h4>New cases with prediction for 24 days</h4>
+  <div class="col-9">
+    <img src={{getCasesPlot}} alt="Plot" width="850">
+  </div>
+  <div class="col-md-3 block">
+    <div class="col-md-3 block">
+      <div class="circle">
+        <p>New cases</p>
+        <p style="font-size: 25px">{{covidStatModel.new_cases}}</p>
+      </div>
+    </div>
+    <div class="col-md-3 block">
+            <div class="circle">
+              <p>Total cases</p>
+              <p style="font-size: 25px">{{covidStatModel.total_cases}}</p>
+            </div>
+    </div>
+  </div>
+</div>
