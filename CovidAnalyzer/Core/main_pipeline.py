@@ -1,5 +1,8 @@
+from matplotlib import pyplot as plt
+
 import prepare_dataset as pds
 import learning_model as lm
+import seaborn as sns
 
 
 if __name__ == '__main__':

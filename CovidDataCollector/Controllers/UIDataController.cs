@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CovidDataCollector.Managers;
 using CovidDataCollector.Models;
 using CovidDataCollector.Services;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CovidDataCollector.Controllers
@@ -17,10 +12,12 @@ namespace CovidDataCollector.Controllers
     public class UIDataController : ControllerBase
     {
         private readonly IPlotService _uiUtilService;
+        private readonly ICovidStatManager _covidStatManager;
 
-        public UIDataController(IPlotService uiUtilService)
+        public UIDataController(IPlotService uiUtilService, ICovidStatManager covidStatManager)
         {
             _uiUtilService = uiUtilService;
+            _covidStatManager = covidStatManager;
         }
 
         [HttpGet("GetDeathPlot")]
@@ -44,12 +41,18 @@ namespace CovidDataCollector.Controllers
             models.Reverse();
 
             var covidStatModel = models.First();
+
+            var predictedCasesData = _covidStatManager.GetPredictionData("new_cases");
+            var predictedDeathsData = _covidStatManager.GetPredictionData("new_deaths");
+
             return Ok(new CovidStatModel
             {
                 new_cases = covidStatModel.new_cases,
-                new_deaths = covidStatModel.new_deaths,
+                new_deaths = (double)covidStatModel.new_deaths,
                 total_cases = covidStatModel.total_cases,
-                total_deaths = covidStatModel.total_deaths
+                total_deaths = (double)covidStatModel.total_deaths,
+                cases_for_tomorrow = Math.Round(predictedCasesData.First()),
+                deaths_for_tomorrow = Math.Round(predictedDeathsData.First())
             });
         }
     }

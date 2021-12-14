@@ -26,6 +26,8 @@ export class HomeComponent {
 export interface CovidStatModel {
   total_cases: number;
   new_cases: number;
-  total_deaths: number | null;
-  new_deaths: number | null;
+  total_deaths: number;
+  new_deaths: number;
+  deaths_for_tomorrow: number;
+  cases_for_tomorrow: number;
 }

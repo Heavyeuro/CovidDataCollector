@@ -12,10 +12,17 @@
     <div class="col-md-3 block">
       <div class="circle">
         <p>New deaths</p>
-        <br/>
+        <br />
         <p style="font-size: 25px">{{covidStatModel.new_deaths}}</p>
       </div>
-    </div><div class="col-md-3 block">
+    </div>
+    <div class="col-md-3 block">
+      <div class="circle">
+        <p>Deaths prediction</p>
+        <p style="font-size: 25px">{{covidStatModel.deaths_for_tomorrow}}</p>
+      </div>
+    </div>
+    <div class="col-md-3 block">
       <div class="circle">
         <p>Total deaths</p>
         <p style="font-size: 25px">{{covidStatModel.total_deaths}}</p>
@@ -37,10 +44,16 @@
       </div>
     </div>
     <div class="col-md-3 block">
-            <div class="circle">
-              <p>Total cases</p>
-              <p style="font-size: 25px">{{covidStatModel.total_cases}}</p>
-            </div>
+      <div class="circle">
+        <p>Cases prediction</p>
+        <p style="font-size: 25px">{{covidStatModel.cases_for_tomorrow}}</p>
+      </div>
+    </div>
+    <div class="col-md-3 block">
+      <div class="circle">
+        <p>Total cases</p>
+        <p style="font-size: 25px">{{covidStatModel.total_cases}}</p>
+      </div>
     </div>
   </div>
 </div>
